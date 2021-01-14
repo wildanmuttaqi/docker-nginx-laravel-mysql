@@ -1,0 +1,36 @@
+version: '3.7'
+
+services: 
+    web:
+        image: nginx:1.14-alpine
+        environment:
+            - TZ=Asia/Jakarta
+        ports:
+            - 80:80
+        volumes:
+            - ./nginx/conf.d:/etc/nginx/conf.d
+            - ./laravel:/var/www/laravel
+        depends_on:
+            - app
+    app:
+        image: wildanmuttaqi/php:7.3-lite
+        volumes:
+            - ./laravel/docker/php/php.ini:/usr/local/etc/php/php.ini
+            - ./laravel:/var/www/laravel
+            - ./laravel/.env:/var/www/laravel/.env
+        working_dir: /var/www/laravel
+        depends_on:
+            - db
+    db:
+        image: mysql:5.7
+        environment:
+            MYSQL_ROOT_PASSWORD: suhu123
+            MYSQL_DATABASE: db_suhu
+        volumes: 
+            - ./mysql/conf.d:/etc/mysql/conf.d
+            - suhu-db:/var/lib/mysql
+        ports:
+            - 3306:3306
+volumes: 
+    suhu-db:
+      driver: local
