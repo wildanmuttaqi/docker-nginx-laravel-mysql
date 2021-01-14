@@ -72,22 +72,12 @@ RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-di
         imagick \
         redis \
     && rm -rf /var/lib/apt/lists/*
-
-# Install xdebug
-RUN pecl install xdebug-2.7.2 && \
-    docker-php-ext-enable xdebug
-
+    
 # Install wkhtmltopdf
 RUN apt-get update -y && apt-get install wkhtmltopdf xvfb xauth xfonts-base xfonts-75dpi fontconfig libssl1.0-dev -y && \
     wget https://github.com/h4cc/wkhtmltopdf-amd64/raw/master/bin/wkhtmltopdf-amd64 -O /usr/bin/wkhtmltopdf && \
 	chmod a+rx /usr/bin/wkhtmltopdf && \
 	ln -s /usr/bin/wkhtmltopdf /usr/local/sbin/wkhtmltopdf
-
-# PNG Quant
-RUN apt-get install -y pngquant
-
-# OPcache
-RUN docker-php-ext-install opcache
 
 # Asia/Jakarta Timezone
 RUN ln -sf /usr/share/zoneinfo/Asia/Jakarta /etc/localtime
@@ -98,6 +88,3 @@ RUN sed -i -e 's/# id_ID.UTF-8 UTF-8/id_ID.UTF-8 UTF-8/' /etc/locale.gen && \
     dpkg-reconfigure --frontend=noninteractive locales && \
     update-locale LANG=id_ID.UTF-8
 ENV LANG id_ID.UTF-8 
-
-# Install Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
